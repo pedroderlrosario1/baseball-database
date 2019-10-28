@@ -1,20 +1,19 @@
 CREATE DATABASE Baseball;
 USE Baseball;
-CREATE TABLE PLAYERS
+CREATE TABLE teams
 (
     id INT
     AUTO_INCREMENT,
-    firsttname VARCHAR
+    location VARCHAR
     (255),
-    lastname VARCHAR
+    teamMascot VARCHAR
     (255),
-    position VARCHAR
-    (2),
-    Hits ENUM
-    ('R', 'L', 'B'),
-    throws ENUM
-    ('R', 'L', 'B'),
-    currentTeamId INT,
+    abbreviation VARCHAR
+    (3),
+    league ENUM
+    ('AL', 'NL'),
+    division ENUM
+    ('East', 'West', 'Central'),
     createAt DATETIME DEFAULT NOW
     (),
     updateAT DATETIME DEFAULT NOW
@@ -22,26 +21,18 @@ CREATE TABLE PLAYERS
     UPDATE NOW(),
     deletedAt DATETIME,
     PRIMARY KEY
-    (id),
-    FOREIGN KEY
-    (currentTeamId) REFERENCES teams
     (id)
 );
 
-    CREATE TABLE teams
+    CREATE TABLE Games
     (
         id INT
         AUTO_INCREMENT,
-    location VARCHAR
-        (255),
-    teamMascot VARCHAR
-        (255),
-    abbreviation VARCHAR
-        (3),
-    league ENUM
-        ('AL', 'NL'),
-    division ENUM
-        ('East', 'West', 'Central'),
+    startTime DATETIME,
+    homeTeamId INT,
+    awayTeamId INT,
+    homeScore INT,
+    awayScore INT,
     createAt DATETIME DEFAULT NOW
         (),
     updateAT DATETIME DEFAULT NOW
@@ -49,17 +40,30 @@ CREATE TABLE PLAYERS
         UPDATE NOW(),
     deletedAt DATETIME,
     PRIMARY KEY
-        (id)
+        (id),
+    FOREIGN KEY
+        (homeTeamId) REFERENCES teams
+        (id), 
+    FOREIGN KEY
+        (awayTeamId) REFERENCES teams
+        (id)  
 );
-        CREATE TABLE Games
+
+        CREATE TABLE PLAYERS
         (
             id INT
             AUTO_INCREMENT,
-    startTime DATETIME,
-    homeTeamId INT,
-    awayTeamId INT,
-    homeScore INT,
-    awayScore INT,
+    firsttname VARCHAR
+            (255),
+    lastname VARCHAR
+            (255),
+    position VARCHAR
+            (2),
+    Hits ENUM
+            ('R', 'L', 'B'),
+    throws ENUM
+            ('R', 'L', 'B'),
+    currentTeamId INT,
     createAt DATETIME DEFAULT NOW
             (),
     updateAT DATETIME DEFAULT NOW
@@ -69,11 +73,8 @@ CREATE TABLE PLAYERS
     PRIMARY KEY
             (id),
     FOREIGN KEY
-            (homeTeamId) REFERENCES teams
-            (id), 
-    FOREIGN KEY
-            (awayTeamId) REFERENCES teams
-            (id)  
+            (currentTeamId) REFERENCES teams
+            (id)
 );
 
             CREATE TABLE hittingStats
