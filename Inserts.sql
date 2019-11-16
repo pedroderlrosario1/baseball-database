@@ -1,3 +1,37 @@
+-- List all the players for the Red Sox (Full Name, Position, Hits, Throws, Team Abbreviation)
+USE Baseball;
+SELECT CONCAT(firstName, ' ', lastName) AS FullName, position, hits, throws, abbreviation AS "Team Abbreviation"
+FROM players p JOIN teams t ON p.currentTeamId = t.id
+WHERE t.abbreviation = 'BOS';
+
+-- Who are the top 5 home run hitters for games played on June 6th? (Full Name, Position, Team Abbreviation, HomeRuns)
+SELECT CONCAT(firstName, ' ', lastName) AS FullName, position, abbreviation, homeRuns
+FROM hittingStats hs JOIN players p on hs.playerId = p.id
+JOIN players p ON hs.playerId = p.id
+JOIN teams t ON hs.teamId = t.id
+JOIN games g ON hs.gameid = g.id
+WHERE g.startTime LIKE '2019-06-06%' AND hs.homeRuns > 0
+ORDER BY hs.homeRuns DESC, lastname LIMIT 5; 
+
+-- Who are the top 5 pitchers in ERA for games played on June 6th who have at least 4 innings pitched in that game? (Full Name, Team Abbreviation, ERA)
+SELECT CONCAT(firstName, ' ', lastName) AS FullName, abbreviation, (ps.earnedRuns/ps.inningsPitched * 9) AS ERA
+FROM pitchingStats ps
+JOIN players p ON ps.playerId = p.id
+JOIN teams t ON ps.teamId = t.id
+JOIN games g ON ps.gameId = g.id
+WHERE g.startTime LIKE '2019-06-06%' AND ps.inningsPitched >= 4
+ORDER BY ERA ASC LIMIT 5;
+
+-- 	Which player hit the most doubles on June 6th? (Full Name, Position, Team Abbreviation, Doubles, Game Start Time, Home Team, Away Team)
+SELECT CONCAT(firstName, ' ', lastName) AS FullName, position, t.abbreviation, doubles, startTime, home.abbreviation AS Home, away.abbreviation AS Away
+FROM hittingStats hs 
+JOIN players p ON hs.playerId = p.id 
+JOIN teams t ON hs.teamId = t.id
+JOIN games g ON hs.gameid = g.id
+JOIN teams home ON g.homeTeamId = home.id
+JOIN teams away ON g.awayTeamId = away.id
+ORDER BY hs.doubles DESC LIMIT 1;
+
 INSERT INTO teams (location, mascot, abbreviation, league, division)
 VALUES
 ("Pittsburgh","Pirates","PIT","NL","Central"),
